@@ -44,8 +44,6 @@ using namespace std;
 
 
 // LCD Address
-
-
 // commands
 #define LCD_CLEARDISPLAY 0x01
 #define LCD_RETURNHOME 0x02
@@ -93,17 +91,18 @@ using namespace std;
 #define En 0b00000100 // Enable bit
 #define Rw 0b00000010 // Read/Write bit
 #define Rs 0b00000001 // Register select bit
+//define control bits
 
-
+//Refresh ratio
+#define REFRESH_TIMEOUT 0.01
+//Refresh ratio
 
 // DEFINE BASICAL VARIABLES
 int lcd_bl;
-
-
 int lsdbl;
 int data;
 int cmd;
-
+float refreshtime;
 //
 
 int lcd_backlight(int lcdbl=1){
@@ -132,7 +131,7 @@ if (ioctl(i2cfd, I2C_SLAVE, I2C_ADDR) < 0) {  //Проверяем устрой�
 }    
 i2cbuffer[0]=(int)(buffer.to_ulong());
 
-cout<<i2cbuffer<<endl;
+//cout<<i2cbuffer<<endl;
 write(i2cfd,i2cbuffer, 1);
 close (i2cfd);
 sleep(0.001) ; 
@@ -173,33 +172,99 @@ int lcd_write(int cmd, int mode=0){
         
 }
 
-int lcd_display_string( std::string string, int raw=1, int col=1){
-       
-        if (raw == 1){
-            lcd_write(0x80+col-1);
-        }
-            
-        if (raw == 2){
-            lcd_write(0xC0+col-1);
-        }
-        if (raw == 3){
-            lcd_write(0x94+col-1);
-        }
-        if (raw == 4){
-            lcd_write(0xD4+col-1);
-        }
+int lcd_display_string( std::string string, int raw=1, int col=1){ 
+      ////
+      int col_new;
+      if (raw == 1){
+          col_new = col;
+      };
+      if (raw == 2){
+          col_new = 0x40 + col;
+        };
+      if (raw == 3){
+          col_new = 0x14 + col;
+          
+    };
+      if (raw == 4){
+          col_new = 0x54 + col;
+          
+    };
 
-        
+      lcd_write(0x80 + col_new);
+      /////  
         
         for(char& charapters : string) {
-        cout<<(int)charapters<<endl;
+        //cout<<(int)charapters<<endl;
         lcd_write((int)charapters, Rs);
+
         }
       //  for char in string:
         
+}
 
+
+float check_refresh_time(float time){
+if (time < REFRESH_TIMEOUT){
+refreshtime=REFRESH_TIMEOUT;
+};
+if (time > REFRESH_TIMEOUT){
+refreshtime=time;
+}
+return (refreshtime);
+}
+//////////////
+
+int lcd_display_text( std::string string, int col=1){
+      int i=0;  
+      ////
+      int col_new;
+      lcd_write(LCD_CLEARDISPLAY);
+      col_new = col;
+      lcd_write(0x80 + col_new);
+      /////  
+      
+        for(char& charapters : string) {
+        //cout<<(int)charapters<<endl;
+        lcd_write((int)charapters, Rs);
+        
+            if(i==19-col){
+            lcd_write(LCD_RETURNHOME);
+            col_new = 0x40;
+            lcd_write(0x80 + col_new);
+            }
+            if(i==39-col){
+            lcd_write(LCD_RETURNHOME);
+            col_new = 0x14;
+            lcd_write(0x80 + col_new);
+            }
+            if(i==59-col){
+            lcd_write(LCD_RETURNHOME);
+            col_new = 0x54;
+            lcd_write(0x80 + col_new);
+            }
+            if(i==79-col){
+                
+            float timeout=0;
+            timeout=check_refresh_time(2);
+            sleep(timeout);
+            i=1;
+            col=0;
+            lcd_write(LCD_CLEARDISPLAY);
+            lcd_write(LCD_RETURNHOME);
+            col_new = 0x00;
+            lcd_write(0x80 + col_new);
+            }
+            
+            i++;
+
+            
+        }
+        //  for char in string:
         
 }
+
+
+//////////////
 
 int lcd_clear(void){
         lcd_write(LCD_CLEARDISPLAY);
@@ -233,6 +298,12 @@ lcd_display_string("Test1", 1,1);
 lcd_display_string("Test2", 2, 2);
 lcd_display_string("Test3", 3, 3);
 lcd_display_string("Test4", 4, 4);
+sleep(2);
+lcd_clear();
+lcd_display_text("A locomotive is moving. Someone asks: ‘What moves it?’ A peasant says the devil moves it. Another man says the  locomotive  moves  because  its  wheels go round. A third asserts that the cause of its movement lies in the smoke which the wind carries away. The peasant is irrefutable. He has devised a complete explanation. To refute him someone would have to prove to him that there is no devil, or another peasant would have to explain to him that it is not the devil but a German, who moves the locomotive. Only then, as a result of the contradiction, will they see that they are both wrong. But the man who says that the movement of the wheels is the cause refutes himself, for having once begun to analyze he ought to go on and explain further why the wheels go round; and till he has reached the ultimate cause of the movement of the locomotive in the pressure of steam in the boiler, he has no right to stop in his search for the cause. ", 1);
+sleep(10);
+lcd_clear();
+
 }
 
 
