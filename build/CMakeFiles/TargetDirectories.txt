@@ -1,0 +1,7 @@
+/home/andrey/i2c_display_2004/build/CMakeFiles/install/strip.dir
+/home/andrey/i2c_display_2004/build/CMakeFiles/edit_cache.dir
+/home/andrey/i2c_display_2004/build/CMakeFiles/i2c_display_2004.dir
+/home/andrey/i2c_display_2004/build/CMakeFiles/install.dir
+/home/andrey/i2c_display_2004/build/CMakeFiles/rebuild_cache.dir
+/home/andrey/i2c_display_2004/build/CMakeFiles/list_install_components.dir
+/home/andrey/i2c_display_2004/build/CMakeFiles/install/local.dir

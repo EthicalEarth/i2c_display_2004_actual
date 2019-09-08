@@ -1,0 +1,7 @@
+[
+{
+  "directory": "/home/andrey/i2c_display_2004/build",
+  "command": "/usr/bin/c++    -g   -o CMakeFiles/i2c_display_2004.dir/main.cpp.o -c /home/andrey/i2c_display_2004/main.cpp",
+  "file": "/home/andrey/i2c_display_2004/main.cpp"
+}
+]
