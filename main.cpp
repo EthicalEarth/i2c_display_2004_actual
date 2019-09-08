@@ -214,48 +214,45 @@ return (refreshtime);
 }
 //////////////
 
-int lcd_display_text( std::string string, int col=1){
-      int i=0;  
-      ////
+int lcd_display_text( std::string string){
+      lcd_write(LCD_CLEARDISPLAY);    
+      int i=0;
+      int col=0;
       int col_new;
-      lcd_write(LCD_CLEARDISPLAY);
       col_new = col;
       lcd_write(0x80 + col_new);
-      /////  
-      
         for(char& charapters : string) {
         //cout<<(int)charapters<<endl;
         lcd_write((int)charapters, Rs);
-        
-            if(i==19-col){
+        i++;
+            if(i==20-col){
             lcd_write(LCD_RETURNHOME);
             col_new = 0x40;
             lcd_write(0x80 + col_new);
             }
-            if(i==39-col){
+            if(i==40-col){
             lcd_write(LCD_RETURNHOME);
             col_new = 0x14;
             lcd_write(0x80 + col_new);
             }
-            if(i==59-col){
+            if(i==60-col){
             lcd_write(LCD_RETURNHOME);
             col_new = 0x54;
             lcd_write(0x80 + col_new);
             }
-            if(i==79-col){
+            if(i==80-col){
                 
             float timeout=0;
             timeout=check_refresh_time(2);
             sleep(timeout);
-            i=1;
-            col=0;
+            i=0;
             lcd_write(LCD_CLEARDISPLAY);
             lcd_write(LCD_RETURNHOME);
             col_new = 0x00;
             lcd_write(0x80 + col_new);
             }
             
-            i++;
+            
 
             
         }
@@ -300,9 +297,10 @@ lcd_display_string("Test3", 3, 3);
 lcd_display_string("Test4", 4, 4);
 sleep(2);
 lcd_clear();
-lcd_display_text("A locomotive is moving. Someone asks: ‘What moves it?’ A peasant says the devil moves it. Another man says the  locomotive  moves  because  its  wheels go round. A third asserts that the cause of its movement lies in the smoke which the wind carries away. The peasant is irrefutable. He has devised a complete explanation. To refute him someone would have to prove to him that there is no devil, or another peasant would have to explain to him that it is not the devil but a German, who moves the locomotive. Only then, as a result of the contradiction, will they see that they are both wrong. But the man who says that the movement of the wheels is the cause refutes himself, for having once begun to analyze he ought to go on and explain further why the wheels go round; and till he has reached the ultimate cause of the movement of the locomotive in the pressure of steam in the boiler, he has no right to stop in his search for the cause. ", 1);
-sleep(10);
+lcd_display_text("A locomotive is moving. Someone asks: ‘What moves it?’ A peasant says the devil moves it. Another man says the locomotive moves because  its wheels go round. A third asserts that the cause of its movement lies in the smoke which the wind carries away. The peasant is irrefutable. He has devised a complete explanation. To refute him someone would have to prove to him that there is no devil, or another peasant would have to explain to him that it is not the devil but a German, who moves the locomotive. Only then, as a result of the contradiction, will they see that they are both wrong. But the man who says that the movement of the wheels is the cause refutes himself, for having once begun to analyze he ought to go on and explain further why the wheels go round; and till he has reached the ultimate cause of the movement of the locomotive in the pressure of steam in the boiler, he has no right to stop in his search for the cause. ");
+sleep(4);
 lcd_clear();
+lcd_display_text("AAAAAAAAAAAAAAAAAAABAAAAAAAAAAAAAAAAAAACAAAAAAAAAAAAAAAAAAADAAAAAAAAAAAAAAAAAAAEAAAAAAAAAAAAAAAAAAAEAAAAAAAAAAAAAAAAAAADAAAAAAAAAAAAAAAAAAACAAAAAAAAAAAAAAAAAAAZ");
 
 }
 
